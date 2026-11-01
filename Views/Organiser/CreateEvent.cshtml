@@ -1,0 +1,71 @@
+@model EventFormViewModel
+@{ ViewData["Title"] = "Create Event"; }
+
+<div class="page-header">
+    <div class="container">
+        <h2><i class="bi bi-plus-circle me-2 text-warning"></i>Create New Event</h2>
+    </div>
+</div>
+
+<div class="container py-2">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                @if (Model.ErrorMessage is not null)
+                {
+                    <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage</div>
+                }
+                <form asp-action="CreateEvent" method="post" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Event Name *</label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g. Johannesburg City Run" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Tell participants about this event…"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date & Time *</label>
+                            <input asp-for="EventDate" type="datetime-local" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location *</label>
+                            <input asp-for="Location" class="form-control" placeholder="e.g. Johannesburg, Gauteng" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Distance (km) *</label>
+                            <input asp-for="DistanceKm" type="number" step="0.1" min="0.1" class="form-control" placeholder="10" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Event Type *</label>
+                            <select asp-for="EventType" class="form-select">
+                                <option value="Run">🏃 Run</option>
+                                <option value="Walk">🚶 Walk</option>
+                                <option value="Cycle">🚴 Cycle</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="Draft">Draft</option>
+                                <option value="Published">Published</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Banner Image <small class="text-muted">(optional, uploaded to Azure Blob Storage)</small></label>
+                            <input type="file" name="bannerImage" class="form-control" accept="image/*" />
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-raceday px-4">
+                            <i class="bi bi-check-lg me-1"></i>Create Event
+                        </button>
+                        <a asp-action="Events" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

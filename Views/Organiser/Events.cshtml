@@ -1,0 +1,70 @@
+@model List<EventResponse>
+@{ ViewData["Title"] = "My Events"; }
+
+<div class="page-header">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h2><i class="bi bi-calendar-event me-2 text-warning"></i>My Events</h2>
+        <a asp-action="CreateEvent" class="btn btn-raceday">
+            <i class="bi bi-plus-lg me-1"></i>New Event
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-calendar-x display-3 d-block mb-3"></i>
+            <p>No events yet. Create your first one!</p>
+            <a asp-action="CreateEvent" class="btn btn-raceday">Create Event</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var ev in Model)
+            {
+                var enrolCount = ev.Categories.Sum(c => c.EnrolledCount);
+                var icon = ev.EventType switch { "Run" => "person-running", "Cycle" => "bicycle", _ => "person-walking" };
+                <div class="col-md-6 col-lg-4">
+                    <div class="card event-card h-100">
+                        <div class="card-img-top d-flex align-items-center justify-content-center position-relative"
+                             style="height:140px; background:linear-gradient(135deg,#1a1a2e,#0f3460)">
+                            @if (!string.IsNullOrEmpty(ev.BannerImageUrl))
+                            {
+                                <img src="@ev.BannerImageUrl" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0" alt="" />
+                            }
+                            <i class="bi bi-@icon text-white" style="font-size:3rem;z-index:1"></i>
+                            <span class="badge bg-warning text-dark event-type-badge">@ev.EventType</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@ev.Name</h5>
+                            <p class="text-muted small mb-1"><i class="bi bi-calendar3 me-1"></i>@ev.EventDate.ToString("dd MMM yyyy")</p>
+                            <p class="text-muted small mb-2"><i class="bi bi-geo-alt me-1"></i>@ev.Location</p>
+                            <span class="badge status-@ev.Status.ToLower() mb-2">@ev.Status</span>
+                            <p class="text-muted small mb-0"><i class="bi bi-people me-1"></i>@enrolCount enrolment(s)</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 d-flex gap-2 flex-wrap">
+                            <a asp-action="Categories" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-tag me-1"></i>Categories
+                            </a>
+                            <a asp-action="Enrolments" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-people me-1"></i>Enrolments
+                            </a>
+                            <a asp-action="Results" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-trophy me-1"></i>Results
+                            </a>
+                            <a asp-action="EditEvent" asp-route-id="@ev.EventId" class="btn btn-sm btn-warning ms-auto">
+                                <i class="bi bi-pencil me-1"></i>Edit
+                            </a>
+                            <form asp-action="DeleteEvent" method="post" onsubmit="return confirm('Delete this event?')">
+                                <input type="hidden" name="id" value="@ev.EventId" />
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

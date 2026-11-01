@@ -1,0 +1,109 @@
+@model List<EnrolmentResponse>
+@{
+    ViewData["Title"] = "Results Entry";
+    var ev = ViewBag.Event as EventResponse;
+    var existing = ViewBag.ExistingResults as Dictionary<int, ResultResponse> ?? new();
+}
+
+<div class="page-header">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="bi bi-trophy me-2 text-warning"></i>Results Entry</h2>
+            <p class="text-muted mb-0 small">@ev?.Name</p>
+        </div>
+        <a asp-action="Events" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+    </div>
+</div>
+
+<div class="container">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-clipboard-x display-3 d-block mb-3"></i>
+            <p>No enrolments found for this event.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <table class="table raceday-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Bib</th>
+                        <th>Participant</th>
+                        <th>Category</th>
+                        <th>Finish Time <small class="fw-normal">(hh:mm:ss)</small></th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var enrolment in Model.Where(e => e.Status != "Cancelled").OrderBy(e => e.CategoryName).ThenBy(e => e.ParticipantName))
+                    {
+                        var hasResult = existing.TryGetValue(enrolment.EnrolmentId, out var result);
+                        <tr>
+                            <td><span class="badge bg-dark">@enrolment.BibNumber</span></td>
+                            <td class="fw-semibold">@enrolment.ParticipantName</td>
+                            <td class="text-muted small">@enrolment.CategoryName</td>
+                            @if (hasResult)
+                            {
+                                <form asp-action="UpdateResult" method="post" class="contents">
+                                    <input type="hidden" name="eventId" value="@ev?.EventId" />
+                                    <input type="hidden" name="resultId" value="@result!.ResultId" />
+                                    <td>
+                                        <input type="text" name="finishTime" class="form-control form-control-sm"
+                                               value="@result.FinishTime?.ToString(@"hh\:mm\:ss")" placeholder="00:52:14" style="width:110px" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="position" class="form-control form-control-sm"
+                                               value="@result.Position" min="1" style="width:80px" />
+                                    </td>
+                                    <td>
+                                        <select name="status" class="form-select form-select-sm" style="width:110px">
+                                            <option value="Finished" selected="@(result.Status=="Finished")">Finished</option>
+                                            <option value="DNF"      selected="@(result.Status=="DNF")">DNF</option>
+                                            <option value="DSQ"      selected="@(result.Status=="DSQ")">DSQ</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-arrow-clockwise"></i> Update
+                                        </button>
+                                    </td>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="SaveResult" method="post" class="contents">
+                                    <input type="hidden" name="eventId" value="@ev?.EventId" />
+                                    <input type="hidden" name="enrolmentId" value="@enrolment.EnrolmentId" />
+                                    <td>
+                                        <input type="text" name="finishTime" class="form-control form-control-sm"
+                                               placeholder="00:52:14" style="width:110px" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="position" class="form-control form-control-sm"
+                                               min="1" style="width:80px" placeholder="#" />
+                                    </td>
+                                    <td>
+                                        <select name="status" class="form-select form-select-sm" style="width:110px">
+                                            <option value="Finished">Finished</option>
+                                            <option value="DNF">DNF</option>
+                                            <option value="DSQ">DSQ</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn btn-sm btn-raceday">
+                                            <i class="bi bi-save"></i> Save
+                                        </button>
+                                    </td>
+                                </form>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

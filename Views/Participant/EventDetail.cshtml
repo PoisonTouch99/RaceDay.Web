@@ -1,0 +1,130 @@
+@model EventResponse
+@{ ViewData["Title"] = Model.Name; var enrolled = ViewBag.EnrolledCategoryIds as HashSet<int> ?? new(); }
+
+@if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+{
+    <div style="height:260px;background:url('@Model.BannerImageUrl') center/cover no-repeat;position:relative">
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.65))"></div>
+        <div class="container h-100 d-flex align-items-end pb-4" style="position:relative">
+            <h1 class="text-white fw-bold">@Model.Name</h1>
+        </div>
+    </div>
+}
+else
+{
+    <div class="hero-banner">
+        <div class="container"><h1>@Model.Name</h1></div>
+    </div>
+}
+
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Event info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Event Information</h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <i class="bi bi-calendar3 text-warning me-2"></i>
+                            <strong>Date</strong><br />
+                            <span class="ms-4 text-muted">@Model.EventDate.ToString("dddd, dd MMMM yyyy")<br />
+                            <span class="ms-0">@Model.EventDate.ToString("HH:mm")</span></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="bi bi-geo-alt text-warning me-2"></i>
+                            <strong>Location</strong><br />
+                            <span class="ms-4 text-muted">@Model.Location</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="bi bi-signpost text-warning me-2"></i>
+                            <strong>Distance</strong><br />
+                            <span class="ms-4 text-muted">@Model.DistanceKm km</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="bi bi-person-circle text-warning me-2"></i>
+                            <strong>Organiser</strong><br />
+                            <span class="ms-4 text-muted">@Model.OrganiserName</span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <hr />
+                        <p class="mb-0 text-muted">@Model.Description</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <h5 class="fw-bold mb-3">Available Categories</h5>
+            @if (!Model.Categories.Any())
+            {
+                <p class="text-muted">No categories added yet.</p>
+            }
+            else
+            {
+                @foreach (var cat in Model.Categories)
+                {
+                    var isEnrolled   = enrolled.Contains(cat.CategoryId);
+                    var isFull       = cat.EnrolledCount >= cat.MaxParticipants;
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div>
+                                <h6 class="fw-bold mb-1">@cat.Name
+                                    <span class="badge bg-secondary ms-1">@cat.CategoryType</span>
+                                </h6>
+                                <p class="mb-0 text-muted small">
+                                    @if (cat.CategoryType == "Distance") { <span>@cat.DistanceKm km · </span> }
+                                    else { <span>Ages @cat.MinAge–@cat.MaxAge · </span> }
+                                    Entry: <strong>R @cat.EntryFee.ToString("N2")</strong> ·
+                                    @cat.EnrolledCount / @cat.MaxParticipants spots filled
+                                </p>
+                            </div>
+                            <div>
+                                @if (isEnrolled)
+                                {
+                                    <span class="badge status-confirmed fs-6 px-3 py-2">
+                                        <i class="bi bi-check-circle me-1"></i>Enrolled
+                                    </span>
+                                }
+                                else if (isFull)
+                                {
+                                    <span class="badge bg-danger fs-6 px-3 py-2">Full</span>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Participant" asp-action="Enrol" method="post">
+                                        <input type="hidden" name="categoryId" value="@cat.CategoryId" />
+                                        <input type="hidden" name="eventId" value="@Model.EventId" />
+                                        <button type="submit" class="btn btn-raceday">
+                                            <i class="bi bi-flag-fill me-1"></i>Enter Event
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-4">
+                    @{ var icon = Model.EventType switch { "Run" => "person-running", "Cycle" => "bicycle", _ => "person-walking" }; }
+                    <i class="bi bi-@icon display-2 text-warning"></i>
+                    <h5 class="mt-2 fw-bold">@Model.EventType</h5>
+                    <p class="text-muted">@Model.DistanceKm km</p>
+                    @if (enrolled.Any())
+                    {
+                        <div class="alert alert-success py-2 mb-0">
+                            <i class="bi bi-check-circle me-1"></i>You're entered!
+                        </div>
+                    }
+                </div>
+            </div>
+            <a asp-action="Home" class="btn btn-outline-secondary w-100 mt-3">
+                <i class="bi bi-arrow-left me-1"></i>Back to Events
+            </a>
+        </div>
+    </div>
+</div>

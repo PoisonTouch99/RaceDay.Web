@@ -1,0 +1,55 @@
+@model List<EnrolmentResponse>
+@{ ViewData["Title"] = "My Entries"; }
+
+<div class="page-header">
+    <div class="container">
+        <h2><i class="bi bi-person-check me-2 text-warning"></i>My Entries</h2>
+    </div>
+</div>
+
+<div class="container">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-calendar-plus display-3 d-block mb-3"></i>
+            <p>You haven't entered any events yet.</p>
+            <a asp-action="Home" class="btn btn-raceday">Browse Events</a>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <table class="table raceday-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Bib</th>
+                        <th>Enrolled</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">
+                                <a asp-action="EventDetail" asp-route-id="@e.EventId" class="text-decoration-none text-dark">
+                                    @e.EventName
+                                </a>
+                            </td>
+                            <td class="text-muted small">@e.EventDate?.ToString("dd MMM yyyy")</td>
+                            <td>@e.CategoryName</td>
+                            <td><span class="badge bg-dark">@e.BibNumber</span></td>
+                            <td class="text-muted small">@e.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <span class="badge status-@e.Status.ToLower()">@e.Status</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

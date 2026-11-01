@@ -1,0 +1,108 @@
+:root {
+  --rd-orange: #F97316;
+  --rd-dark:   #1a1a2e;
+  --rd-mid:    #16213e;
+  --rd-accent: #e94560;
+  --rd-text:   #f0f0f0;
+}
+
+/* ── Global ─────────────────────────────────── */
+body { background: #f8f9fa; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+/* ── Navbar ─────────────────────────────────── */
+.raceday-nav {
+  background: linear-gradient(135deg, var(--rd-dark) 0%, var(--rd-mid) 100%);
+  border-bottom: 3px solid var(--rd-orange);
+  box-shadow: 0 2px 12px rgba(0,0,0,.35);
+}
+.raceday-nav .navbar-brand { font-size: 1.4rem; letter-spacing: .03em; }
+.raceday-nav .nav-link { color: rgba(255,255,255,.85) !important; transition: color .15s; }
+.raceday-nav .nav-link:hover { color: var(--rd-orange) !important; }
+
+/* ── Hero / Banner ───────────────────────────── */
+.hero-banner {
+  background: linear-gradient(135deg, var(--rd-dark) 0%, #0f3460 100%);
+  color: #fff;
+  padding: 3.5rem 0 2.5rem;
+  border-bottom: 4px solid var(--rd-orange);
+}
+.hero-banner h1 { font-weight: 700; font-size: 2rem; }
+
+/* ── Cards ───────────────────────────────────── */
+.event-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  transition: transform .2s, box-shadow .2s;
+  overflow: hidden;
+}
+.event-card:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(0,0,0,.13); }
+
+.event-card .card-img-top {
+  height: 160px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #0f3460 0%, var(--rd-mid) 100%);
+}
+.event-card .event-type-badge {
+  position: absolute; top: 12px; right: 12px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+}
+
+/* ── Tables ──────────────────────────────────── */
+.raceday-table thead { background: var(--rd-dark); color: #fff; }
+.raceday-table thead th { font-weight: 500; border: none; }
+.raceday-table tbody tr:hover { background: #fff8f0; }
+
+/* ── Status badges ───────────────────────────── */
+.status-confirmed  { background: #d1fae5; color: #065f46; }
+.status-pending    { background: #fef3c7; color: #92400e; }
+.status-cancelled  { background: #fee2e2; color: #991b1b; }
+.status-finished   { background: #dbeafe; color: #1e40af; }
+.status-dnf        { background: #f3f4f6; color: #374151; }
+.status-dsq        { background: #fce7f3; color: #9d174d; }
+.status-published  { background: #d1fae5; color: #065f46; }
+.status-draft      { background: #fef3c7; color: #92400e; }
+.status-closed     { background: #f3f4f6; color: #374151; }
+
+/* ── Buttons ─────────────────────────────────── */
+.btn-raceday {
+  background: var(--rd-orange);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+.btn-raceday:hover { background: #ea6c0a; color: #fff; }
+
+/* ── Forms ───────────────────────────────────── */
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.09);
+  padding: 2.5rem;
+}
+.form-label { font-weight: 500; color: #374151; }
+
+/* ── Footer ──────────────────────────────────── */
+.raceday-footer {
+  background: var(--rd-dark);
+  border-top: 3px solid var(--rd-orange);
+}
+
+/* ── Event type icons colour ─────────────────── */
+.type-run   { color: #ef4444; }
+.type-walk  { color: #10b981; }
+.type-cycle { color: #3b82f6; }
+
+/* ── Page header strip ───────────────────────── */
+.page-header {
+  background: #fff;
+  border-bottom: 2px solid var(--rd-orange);
+  padding: 1.2rem 0;
+  margin-bottom: 2rem;
+}
+.page-header h2 { font-weight: 700; margin: 0; color: var(--rd-dark); }
